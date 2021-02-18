@@ -9,8 +9,8 @@ describe("Proxy", () => {
     };
 
     const newCar = new Proxy(oldCar, {
-      set(_t, _p, receiver) {
-        monitoring.actions(receiver);
+      set(_t, prop, receiver) {
+        monitoring.actions(prop, receiver);
         Reflect.set(...arguments);
       },
     });
@@ -18,6 +18,6 @@ describe("Proxy", () => {
     newCar.model = currentYear;
 
     expect(monitoring.actions).toHaveBeenCalledTimes(1);
-    expect(monitoring.actions).toHaveBeenCalledWith(currentYear);
+    expect(monitoring.actions).toHaveBeenCalledWith("model", currentYear);
   });
 });
