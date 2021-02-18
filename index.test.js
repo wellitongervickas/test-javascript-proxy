@@ -1,5 +1,5 @@
 describe("Proxy", () => {
-  it("should intercept a method calling", () => {
+  it("should intercept action when model has been changed", () => {
     expect.assertions(2);
 
     const oldCar = { color: "blue", model: 2012 };
