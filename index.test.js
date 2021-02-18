@@ -1,23 +1,25 @@
+const { compose } = require("ramda");
+
 describe("Proxy", () => {
-  it("should intercept action when model has been changed", () => {
+  it("should intercept action when model year has been changed", () => {
     expect.assertions(2);
 
+    const details = { modelYear: 2011 };
     const currentYear = new Date().getFullYear();
-    const oldCar = { color: "blue", model: 2012 };
-    const monitoring = {
-      actions: jest.fn(),
-    };
+    const monitoring = jest.fn((v) => v ?? {});
 
-    const newCar = new Proxy(oldCar, {
-      set(_t, prop, receiver) {
-        monitoring.actions(prop, receiver);
-        Reflect.set(...arguments);
-      },
+    const car = new Proxy(details, {
+      set: compose(Reflect.set, monitoring),
     });
 
-    newCar.model = currentYear;
+    car.modelYear = currentYear;
 
-    expect(monitoring.actions).toHaveBeenCalledTimes(1);
-    expect(monitoring.actions).toHaveBeenCalledWith("model", currentYear);
+    expect(monitoring).toHaveBeenCalledTimes(1);
+    expect(monitoring).toHaveBeenCalledWith(
+      details,
+      "modelYear",
+      currentYear,
+      details
+    );
   });
 });
